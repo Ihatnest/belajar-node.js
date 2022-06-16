@@ -1,0 +1,15 @@
+{
+  "name": "ihat",
+  "version": "1.0.0",
+  "description": "belajat npm",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ihatsama",
+  "license": "ISC",
+  "dependencies": {
+    "validator": "^13.7.0"
+  }
+}
