@@ -21,6 +21,8 @@ const cek = () => {
 
   }
 }
+cek()
+
 // untuk mebuat pertanyaan
 const pertanyaan = (pertanyaan) => {
   return new Promise((resolve, reject) => {
@@ -43,15 +45,13 @@ const penambahData = () => {
   // mengubah dataJson menjadi string
   fs.writeFileSync('./naga/data.json', JSON.stringify(dataJson))
   console.log(`data ${dataContact.nama} berhasil ditambahkan`)
-
+  // untuk menutup program
+  rl.close();
 }
 // untuk exports ke main.js
 module.exports = {
-  fs: fs,
-  rl: rl,
-  cek: cek,
-  pertanyaan: pertanyaan,
-  penambahData: penambahData
+  pertanyaan,
+  penambahData
 }
 
 
