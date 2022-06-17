@@ -1,20 +1,27 @@
+// require() module core
 const fs = require('fs');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-// mengecekk apakah aada folder yang di tuju ada atau tidak
-if (!fs.existsSync('./naga/data.json', 'utf8')) {
-  try {
-    fs.mkdirSync('./naga', e => console.log(e))
-    fs.writeFileSync('./naga/data.json', '[]')
-  } catch (e) {
+const main = require('./main')
+
+
+// untuk mengecek apakah file data.json sudah ada atau belum
+const cek = () => {
+  if (!fs.existsSync('./naga/data.json', 'utf8')) {
+    try {
+      fs.mkdirSync('./naga', e => console.log(e))
+      fs.writeFileSync('./naga/data.json', '[]')
+    } catch (e) {
+    }
+  } else {
     console.log('folder sudah ada')
+
   }
 }
-
-// untuk membuat pertanyaan
+// untuk mebuat pertanyaan
 const pertanyaan = (pertanyaan) => {
   return new Promise((resolve, reject) => {
     rl.question(pertanyaan, e => {
@@ -22,14 +29,11 @@ const pertanyaan = (pertanyaan) => {
     })
   })
 }
-const eksekusi = async () => {
-  // petanyaan pertanyaa
-  const nama = await pertanyaan('masukan nama kamu? ');
-  const umur = await pertanyaan('masukan umur kamu? ');
-  const email = await pertanyaan('masukan email kamu? ');
-  
+
+// untuk menambah data
+const penambahData = () => {
   // menampung data dari pertanyaan
-  let dataContact = {nama, umur, email}
+  let dataContact = main.dataPertanyaan;
   // mengambil isi dari file data.json
   let data = fs.readFileSync('./naga/data.json', 'utf8')
   // mengubah isi dari file data.json menjadi json
@@ -38,12 +42,16 @@ const eksekusi = async () => {
   dataJson.push(dataContact)
   // mengubah dataJson menjadi string
   fs.writeFileSync('./naga/data.json', JSON.stringify(dataJson))
-  console.log(`data ${nama} berhasil ditambahkan`)
+  console.log(`data ${dataContact.nama} berhasil ditambahkan`)
 
-  rl.close();
 }
-
-eksekusi();
-
+// untuk exports ke main.js
+module.exports = {
+  fs: fs,
+  rl: rl,
+  cek: cek,
+  pertanyaan: pertanyaan,
+  penambahData: penambahData
+}
 
 
