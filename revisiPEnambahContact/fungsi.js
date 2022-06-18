@@ -9,8 +9,6 @@ const cek = () => {
       fs.writeFileSync('./naga/data.json', '[]')
     } catch (e) {
     }
-  } else {
-    console.log('folder sudah ada')
   }
 }
 cek()
@@ -58,17 +56,37 @@ const filterData = () => {
 
   penambahData()
 }
+const dataDariJson = () => {
+  let data = fs.readFileSync('./naga/data.json', 'utf8')
+  let dataJson = JSON.parse(data)
+  return dataJson
+
+}
 
 // untuk menambah data
 const penambahData = () => {
   let dataContact = main.dataCmd;
-  let data = fs.readFileSync('./naga/data.json', 'utf8')
-  let dataJson = JSON.parse(data)
+  const dataJson = dataDariJson()
   dataJson.push(dataContact)
   fs.writeFileSync('./naga/data.json', JSON.stringify(dataJson))
   console.log(`data ${dataContact.nama} berhasil ditambahkan`)
-
 }
-module.exports = {penambahData,filterData}
+
+// untuk menghapus data
+const hapusData = (nama) => {
+  const dataJson = dataDariJson()
+  console.log(dataJson)
+  const dataFilter = dataJson.find(e => e.nama === main.dataCmdDelete.nama)
+  if (dataFilter) {
+    const index = dataJson.indexOf(dataFilter)
+    console.log(index)
+    dataJson.splice(index, 1)
+    fs.writeFileSync('./naga/data.json', JSON.stringify(dataJson))
+    console.log(`data ${main.dataCmdDelete.nama} berhasil dihapus`)
+  } else {
+    console.log(`data ${main.dataCmdDelete.nama} tidak ditemukan`)
+  }
+}
+module.exports = {penambahData,filterData,dataDariJson,hapusData}
 
 
