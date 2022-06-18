@@ -1,14 +1,7 @@
-// require() module core
-
 const fs = require('fs');
-const readline = require('readline');
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
 const main = require('./main')
+const {isEmail,isMobilePhone} = require('validator');
 
-// untuk mengecek apakah file data.json sudah ada atau belum
 const cek = () => {
   if (!fs.existsSync('./naga/data.json', 'utf8')) {
     try {
@@ -18,29 +11,64 @@ const cek = () => {
     }
   } else {
     console.log('folder sudah ada')
-
   }
 }
 cek()
 
+// filter data
+const filterData = () => {
+  let dataFilterCmd = {
+    nama: main.dataCmd.nama,
+    nohp: main.dataCmd.nohp,
+    email: main.dataCmd.email
+  };
+  let data = fs.readFileSync('./naga/data.json', 'utf8')
+  let dataJson = JSON.parse(data)
+  // filter duplicate
+  let dataFilterDupNama = dataJson.find(e => e.nama === dataFilterCmd.nama)
+  if (dataFilterDupNama) {
+    console.log(`gunakan nama yang lain`)
+    return false
+  }
+  let dataFilterDupNohp = dataJson.find(e => e.nohp === dataFilterCmd.nohp)
+  if (dataFilterDupNohp) {
+    console.log(`gunakan nomor hp yang lain`)
+    return false
+  }
+  let dataFilterDupEmail = dataJson.find(e => e.email === dataFilterCmd.email)
+  if (dataFilterDupEmail) {
+    console.log(`gunakan email yang lain`)
+    return false
+  }
+  // filter duplicate tutup
+  // filter nomor hp
+  let dataFilterNohp = isMobilePhone(dataFilterCmd.nohp, 'id-ID')
+  if (!dataFilterNohp) {
+    console.log(`nomor hp tidak valid`)
+    return false
+  }
+  if (dataFilterCmd.email){
+    if (!isEmail(dataFilterCmd.email)) {
+    console.log(`email tidak valid`)
+      return false
+    }
+  }
+  
+  // filter email
+
+  penambahData()
+}
 
 // untuk menambah data
 const penambahData = () => {
-  // menampung data dari pertanyaan
-  let dataContact = main.datacmd;
-  // mengambil isi dari file data.json
+  let dataContact = main.dataCmd;
   let data = fs.readFileSync('./naga/data.json', 'utf8')
-  // mengubah isi dari file data.json menjadi json
   let dataJson = JSON.parse(data)
-  // menambahkan dataContact ke dalam dataJson
   dataJson.push(dataContact)
-  // mengubah dataJson menjadi string
   fs.writeFileSync('./naga/data.json', JSON.stringify(dataJson))
   console.log(`data ${dataContact.nama} berhasil ditambahkan`)
-  // untuk menutup program
-  rl.close();
+
 }
-// untuk exports ke main.js
-module.exports = {penambahData}
+module.exports = {penambahData,filterData}
 
 

@@ -1,6 +1,5 @@
 const yargs = require('yargs');
-const {penambahData} = require('./fungsi');
-const {isEmail,isMobilePhone} = require('validator');
+const {penambahData,filterData} = require('./fungsi');
 yargs.command({
   command: 'add',
   describe: 'menambahkan data',
@@ -22,13 +21,12 @@ yargs.command({
     }  
   },
   handler(argv) {
-    const dataContact = {
+    module.exports.dataCmd= {
       nama: argv.nama,
-      nohp: isMobilePhone(argv.nohp, 'id-ID')? argv.nohp : 'nomor hp tidak valid',
-      email: isEmail(argv.email) ? argv.email : 'email tidak valid'
-    }
-    module.exports.datacmd = dataContact;
-    penambahData()
+      nohp: argv.nohp,
+      email: argv.email
+    };
+    filterData()
   }
 })
 
