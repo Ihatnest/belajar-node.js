@@ -1,0 +1,13 @@
+<%- include ('leyout/header') %>
+<body>
+  <h1>Data</h1>
+  <%- include ('leyout/nav') %> 
+  <h4>list</h4>
+  <ul>
+    <% data.forEach(dat => { %>
+      <li>nama: <%= dat.nama %> </li>
+      <li>age: <%= dat.age %> </li>
+    <% }) %>
+  </ul>
+</body>
+</html>
