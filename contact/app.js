@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
-const { cekdatajson, findContact,penambahData,hapusData } = require('./utils/contact')
+const { check, validationResult, isMobilePhone, isEmail, body } = require('express-validator');
+const { cekdatajson, findContact, penambahData, hapusData, cekdup } = require('./utils/contact')
 const port = 3000
 // const data = [
 //   {
@@ -23,15 +24,28 @@ app.use(express.static('public'))
 app.use(express.urlencoded())
 
 
-app.post('/contact', (req, res) => {
-  penambahData(req.body)
-  let data = cekdatajson()
-  res.render('contact', {
-    title: 'Contact',
-    data
-  })
-})
-
+app.post('/contact',
+  body('nama').custom(value => {
+    cekdup(value)
+    return true
+  }),
+  check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
+  check('email', 'Email tidak valid').isEmail(),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // return res.status(400).json({ errors: errors.array() });
+      res.render('add', {
+          title: 'Contact',
+          errors: errors.array()
+      })
+    } else {
+      penambahData(req.body)
+      let data = cekdatajson()
+      res.redirect('/contact')
+    }
+  }
+)
 app.get('/', (req, res) => {
   let data = cekdatajson()
   res.render('contact', {

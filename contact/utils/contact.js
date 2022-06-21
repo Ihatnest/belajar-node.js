@@ -56,4 +56,12 @@ const hapusData = (nama) => {
   }
 }
 
-module.exports = {cekdatajson,findContact,penambahData,hapusData}
+cekdup = (data) => {
+  let dataJson = cekdatajson()
+  let dataFilterDupNama = dataJson.find(e => e.nama === data)
+  if (dataFilterDupNama) {
+    throw new Error(`nama ${data} sudah ada`)
+    return false
+  }
+}
+module.exports = {cekdatajson,findContact,penambahData,hapusData,cekdup}

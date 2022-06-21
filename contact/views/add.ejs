@@ -1,7 +1,18 @@
 <%- include ('layout/header') %>
 
-  <body class="bg-dark">
+<body class="bg-dark">
     <%- include ('layout/nav') %>
+
+<% if (typeof errors != 'undefined') { %>
+  <div class="alert w-25 p-3" role="alert" style="position: absolute;">
+    <% errors.forEach(e => { %>
+      <div class="alert alert-danger" role="alert">
+        <%= e.msg %> 
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+    
     <form method="post" action="/contact">
       <div class="" style="width: 20rem; height: 10rem; margin: 20px auto; display: flex; flex-wrap: wrap;">
         <label for="nama" class="text-secondary from-label" style="font-size: 15px; margin: 10px 0 0;">Nama</label>
