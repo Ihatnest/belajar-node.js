@@ -4,17 +4,17 @@
     <%- include ('layout/nav') %>
     <% if (!find) { %>
       <div class="alert alert-danger" role="alert">
-        Sepertinya Tidak ada nama <%= test %> didalam daftar contact anda <a href="/contact" class="alert-link">click untuk Kembali</a>.
+        Sepertinya Tidak ada nama <%= test %> didalam daftar contact anda <a href="/" class="alert-link">click untuk Kembali</a>.
       </div>
     <% }else { %>
     <div class="card" style="width: 20rem; height: 10rem; margin: 20px auto; position: relative;">
-      <a href="/contact" type="button"  class="btn-close closeAbout" style="position: absolute; right: 10px; top: 10px;"></a>
+      <a href="/" type="button"  class="btn-close closeAbout" style="position: absolute; right: 10px; top: 10px;"></a>
       <div class="card-body">
         <h5 class="fw-semibold"><%= find.nama %> </h5>
         <h6 class="fw-normal fs-10 text"><%= find.nomorhp %> </h6>
         <h6 class="fw-semibold text-muted"><%= find.email %> </h6>
         <a href="#" class="btn btn-primary">Edit</a>
-        <a href="#" class="btn btn-primary">hapus</a>
+        <a href="/hapus/<%= find.nama %> " class="btn btn-primary">hapus</a>
       </div>
     </div>
     <% } %>

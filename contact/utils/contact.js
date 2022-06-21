@@ -11,14 +11,18 @@ const cek = () => {
     } catch (e) {
     }
   } else {
-    console.log('folder sudah ada')
-
   }
 }
-const cekdatajson = () => {
-  cek()
+
+const dataDariJson = () => {
   let data = fs.readFileSync('./data/data.json', 'utf8')
   let dataJson = JSON.parse(data)
+  return dataJson
+}
+
+const cekdatajson = () => {
+  cek()
+  let dataJson = dataDariJson()
   return dataJson
   console.log(dataJson)
 }
@@ -29,4 +33,27 @@ const findContact = (data) => {
   const dataFilter = dataJson.find(e => e.nama === data)
   return dataFilter
 }
-module.exports = {cekdatajson,findContact}
+
+const penambahData = (Input) => {
+  let dataInput = Input
+  let data = fs.readFileSync('./data/data.json', 'utf8')
+  let dataJson = JSON.parse(data)
+  dataJson.unshift(dataInput)
+  fs.writeFileSync('./data/data.json', JSON.stringify(dataJson))
+}
+
+const hapusData = (nama) => {
+  const dataJson = dataDariJson()
+  const dataFilter = dataJson.find(e => e.nama === nama)
+  if (dataFilter) {
+    const index = dataJson.indexOf(dataFilter)
+    console.log(index)
+    dataJson.splice(index, 1)
+    fs.writeFileSync('./data/data.json', JSON.stringify(dataJson))
+    console.log(`data ${nama} berhasil dihapus`)
+  } else {
+    console.log(`data ${nama} tidak ditemukan`)
+  }
+}
+
+module.exports = {cekdatajson,findContact,penambahData,hapusData}

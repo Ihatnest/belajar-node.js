@@ -60,7 +60,6 @@ const dataDariJson = () => {
   let data = fs.readFileSync('./naga/data.json', 'utf8')
   let dataJson = JSON.parse(data)
   return dataJson
-
 }
 
 // untuk menambah data
