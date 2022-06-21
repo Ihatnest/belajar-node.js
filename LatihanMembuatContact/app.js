@@ -24,16 +24,24 @@ let data = [
 
 app.set('view engine', 'ejs')
 
+
 app.get('/', (req, res) => {
-  res.render('home', {
-    title: 'Home',
+  res.render('contact', {
+    title: 'Contact',
     data
   })
 })
 
-app.get('/contact', (req, res) => {
-  res.render('contact', {
-    title: 'Contact',
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'About',
+    data
+  })
+})
+
+app.get('/add', (req, res) => {
+  res.render('add', {
+    title: 'Add Contact',
     data
   })
 })
