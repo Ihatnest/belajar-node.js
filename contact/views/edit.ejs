@@ -4,25 +4,26 @@
     <%- include ('layout/nav') %>
 
 
-      <form method="post" action="/">
+      <form method="post" action="/contact/edit/y">
+        <input type="hidden" name="oldName" value="<%= find.nama %>">
         <div class="" style="width: 20rem;  margin: 20px auto;">
           <label for="nama" class="text-secondary from-label" style="font-size: 15px; margin: 0 0;">Nama</label>
           <div class="input-group flex-nowrap">
             <input type="text" class="form-control" placeholder="Nama" aria-label="Username"
-              aria-describedby="addon-wrapping" name="nama" >
+              aria-describedby="addon-wrapping" name="nama" value="<%= find.nama %>">
           </div>
 
           <label for="nomorhp" class="text-secondary from-label" style="font-size: 15px; margin: 10px 0 0;">Nomor
             Handphone</label>
           <div class="input-group flex-nowrap">
             <input type="text" class="form-control" placeholder="Nomor Handphone" aria-label="Username"
-              aria-describedby="addon-wrapping" name="nomorhp">
+              aria-describedby="addon-wrapping" name="nomorhp" value="<%= find.nomorhp %>">
           </div>
 
           <label for="email" class="text-secondary from-label" style="font-size: 15px; margin: 10px 0 0;">Email</label>
           <div class="input-group flex-nowrap">
             <input type="email" class="form-control" placeholder="Email" aria-label="Username"
-              aria-describedby="addon-wrapping" name="email">
+              aria-describedby="addon-wrapping" name="email" value="<%= find.email %>">
           </div>
           <input class="btn btn-primary" type="submit" value="input" style=" margin: 20px auto;">
           <input class="btn btn-danger" type="button" value="Batalkan" style=" margin: 20px auto;">

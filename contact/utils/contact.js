@@ -60,7 +60,7 @@ cekdup = (data) => {
   let dataJson = cekdatajson()
   let dataFilterDupNama = dataJson.find(e => e.nama === data)
   if (dataFilterDupNama) {
-    throw new Error(`nama ${data} sudah ada`)
+    throw new Error(`Nama ${data} sudah ada`)
     return false
   }
 }
