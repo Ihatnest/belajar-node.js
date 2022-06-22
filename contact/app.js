@@ -46,7 +46,6 @@ app.post('/',
       })
     } else {
       penambahData(req.body)
-      let data = cekdatajson()
       req.flash('msg', 'Data Berhasil Ditambahkan')
       res.redirect('/')
     }
