@@ -13,7 +13,7 @@
         <h5 class="fw-semibold"><%= find.nama %> </h5>
         <h6 class="fw-normal fs-10 text"><%= find.nomorhp %> </h6>
         <h6 class="fw-semibold text-muted"><%= find.email %> </h6>
-        <a href="/contact/edit/y" class="btn btn-primary">Edit</a>
+        <a href="/contact/edit/<%= find.nama %> " class="btn btn-primary">Edit</a>
         <a href="/hapus/<%= find.nama %> " class="btn btn-danger" onclick="return confirm(`Apakah ada Yakin Ingin Menghapus Contact <%= find.nama %> ` )">hapus</a>
       </div>
     </div>

@@ -35,16 +35,24 @@ const findContact = (data) => {
 }
 
 const penambahData = (Input) => {
+  console.log(Input)
   let dataInput = Input
   let data = fs.readFileSync('./data/data.json', 'utf8')
+  console.log(data)
   let dataJson = JSON.parse(data)
+  console.log(dataJson)
+  console.log(Input)
+  
   dataJson.unshift(dataInput)
+  console.log(dataJson)
   fs.writeFileSync('./data/data.json', JSON.stringify(dataJson))
 }
 
 const hapusData = (nama) => {
+  console.log(nama)
   const dataJson = dataDariJson()
   const dataFilter = dataJson.find(e => e.nama === nama)
+  console.log(dataFilter)
   if (dataFilter) {
     const index = dataJson.indexOf(dataFilter)
     console.log(index)
@@ -55,8 +63,22 @@ const hapusData = (nama) => {
     console.log(`data ${nama} tidak ditemukan`)
   }
 }
+const updateEdit = (nama) => {
+  const dataJson = dataDariJson()
+  console.log(nama)
+  const dataFilter = dataJson.find(e => e.nama === nama.oldName)
+  if (dataFilter) {
+    const index = dataJson.indexOf(dataFilter)
+    console.log(index)
+    dataJson.splice(index, 1, nama)
+    fs.writeFileSync('./data/data.json', JSON.stringify(dataJson))
+    console.log(`data ${nama} berhasil diedit`)
+  } else {
+    console.log(`data ${nama} tidak ditemukan`)
+  }
+}
 
-cekdup = (data) => {
+const cekdup = (data) => {
   let dataJson = cekdatajson()
   let dataFilterDupNama = dataJson.find(e => e.nama === data)
   if (dataFilterDupNama) {
@@ -64,4 +86,4 @@ cekdup = (data) => {
     return false
   }
 }
-module.exports = {cekdatajson,findContact,penambahData,hapusData,cekdup}
+module.exports = {cekdatajson,findContact,penambahData,hapusData,cekdup,updateEdit}

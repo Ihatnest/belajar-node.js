@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const { check, validationResult, isMobilePhone, isEmail, body } = require('express-validator');
-const { cekdatajson, findContact, penambahData, hapusData, cekdup } = require('./utils/contact')
+const { cekdatajson, findContact, penambahData, hapusData, cekdup, updateEdit } = require('./utils/contact')
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session')
@@ -88,16 +88,48 @@ app.get('/hapus/:nama', (req, res) => {
   res.redirect('/')
 })
 
-app.get('/contact/edit/y', (req, res) => {
+
+
+
+app.post('/contact/edit/',
+  body('nama').custom(value => {
+    cekdup(value)
+    return true
+  }),
+  check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
+  check('email', 'Email tidak valid').isEmail(),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      // return res.status(400).json({ errors: errors.array() });
+      res.render('edit', {
+        title: 'edit',
+        errors: errors.array()
+      })
+    } else {
+      updateEdit(req.body)
+      const u = updateEdit(req.body)
+      console.log(u)
+      req.flash('msg', 'Data Berhasil Ditambahkan')
+      res.redirect('/')
+    }
+  }
+)
+app.get('/contact/edit/:nama', (req, res) => {
   let find = findContact(req.params.nama)
   res.render('edit', {
     title: 'Edit',
     find,
+    msg: req.flash('msg'),
+    msgDelete: req.flash('msgDelete')
   })
 })
-app.post('/contact/edit/y', (req, res) => {
-  res.send(req.body)
-})
+
+// app.post('/contact/edit/:nama', (req, res) => {
+//   updateEdit(req.body)
+//   req.flash('msg', 'Data Berhasil Ditambahkan')
+//   res.redirect('/')
+// })
 
 
 
@@ -106,7 +138,7 @@ app.post('/contact/edit/y', (req, res) => {
 app.use('/', (req, res) => {
   res.status(404)
   res.send('404 not found')
-}) 
+})
 
 // untuk menjalankan itu semua
 app.listen(port, () => {
