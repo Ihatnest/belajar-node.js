@@ -2,7 +2,7 @@
 
   <body class="bg-dark">
     <%- include ('layout/nav') %>
-      <form method="post" action="/contact/edit">
+      <form method="post" action="/edit/<%= find.nama %>">
         <input type="hidden" name="oldName" value="<%= find.nama %>">
         <div class="" style="width: 20rem;  margin: 20px auto;">
           <label for="nama" class="text-secondary from-label" style="font-size: 15px; margin: 0 0;">Nama</label>
@@ -24,7 +24,8 @@
               aria-describedby="addon-wrapping" name="email" value="<%= find.email %>">
           </div>
           <input class="btn btn-primary" type="submit" value="input" style=" margin: 20px auto;">
-          <input class="btn btn-danger" type="button" value="Batalkan" style=" margin: 20px auto;">
+          <a class="btn btn-danger" href="/contact/<%= find.nama %> " role="button">Batalkan</a>
+          <!-- <input class="btn " type="button" value="Batalkan" style=" margin: 20px auto;"> -->
         </div>
       </form>
       <% if (typeof errors !='undefined' ) { %>

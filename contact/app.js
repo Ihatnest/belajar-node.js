@@ -80,6 +80,7 @@ app.get('/contact/:nama', (req, res) => {
     test
   })
 })
+
 // untuk mengapus contact
 app.get('/hapus/:nama', (req, res) => {
   hapusData(req.params.nama)
@@ -87,51 +88,49 @@ app.get('/hapus/:nama', (req, res) => {
   res.redirect('/')
 })
 
-
-
-
-app.post('/contact/edit/',
-  body('nama').custom(value => {
-    cekdup(value)
-    return true
-  }),
+app.post('/edit/:nama',
+  // body('nama').custom(value => {
+  //   cekdup(value)
+  //   return true
+  // }),
   check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
   check('email', 'Email tidak valid').isEmail(),
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // return res.status(400).json({ errors: errors.array() });
+      // res.render('edit', {
+      //   title: 'edit',
+      //   errors: errors.array()
+      // })
+      let find = findContact(req.params.nama)
       res.render('edit', {
-        title: 'edit',
+        title: 'Edit',
+        find,
         errors: errors.array()
       })
     } else {
       updateEdit(req.body)
-      const u = updateEdit(req.body)
-      console.log(u)
-      req.flash('msg', 'Data Berhasil Ditambahkan')
+      req.flash('msg', 'Data sudah di edit')
       res.redirect('/')
     }
   }
 )
-app.get('/contact/edit/:nama', (req, res) => {
+
+app.get('/edit/:nama', (req, res) => {
   let find = findContact(req.params.nama)
   res.render('edit', {
     title: 'Edit',
     find,
-    msg: req.flash('msg'),
-    msgDelete: req.flash('msgDelete')
   })
 })
+
 
 // app.post('/contact/edit/:nama', (req, res) => {
 //   updateEdit(req.body)
 //   req.flash('msg', 'Data Berhasil Ditambahkan')
 //   res.redirect('/')
 // })
-
-
-
 
 // midelware untuk ketika user memasukan link salah
 app.use('/', (req, res) => {
