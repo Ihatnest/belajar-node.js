@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const { check, validationResult, isMobilePhone, isEmail, body } = require('express-validator');
-const { cekdatajson, findContact, penambahData, hapusData, cekdup, updateEdit } = require('./utils/contact')
+const { cekdatajson, findContact, penambahData, hapusData, cekdupNama, updateEdit, cekdupEmail } = require('./utils/contact')
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session')
@@ -18,28 +18,28 @@ app.use(session({
 }));
 app.use(flash());
 
-// app.get('/contact', (req, res) => {
-//   let data = cekdatajson()
-//   res.render('contact', {
-//     title: 'Contact',
-//     data,
-//     msg: req.flash('msg'),
-//   })
-// })
 
-// post buat validasi nama, nomor hp dan email
 
+// post saat menambahkan contact buat validasi nama, nomor hp dan email
 app.post('/',
   body('nama').custom(value => {
-    cekdup(value)
+    cekdupNama(value)
     return true
   }),
+  
+  // body('email').custom(value => {
+  //   let cek = cekdupEmail(value)
+  //   let cuk = value.isEmail()
+  //   if(cek === value){
+  //     ce
+  //   }
+  //   return true
+  // }),
   check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
   check('email', 'Email tidak valid').isEmail(),
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // return res.status(400).json({ errors: errors.array() });
       res.render('add', {
         title: 'Contact',
         errors: errors.array()
@@ -51,13 +51,8 @@ app.post('/',
     }
   }
 )
+// post buat validasi nama, nomor hp dan email (penutup)
 
-// untuk ke beranda penambahan contact
-app.get('/contact/add', function (req, res) {
-  res.render('add', {
-    title: 'Add Contact'
-  })
-});
 
 // untuk keberanda contact
 app.get('/', (req, res) => {
@@ -69,6 +64,15 @@ app.get('/', (req, res) => {
     msgDelete: req.flash('msgDelete')
   })
 })
+// untuk keberanda contact (penutup)
+
+// untuk ke beranda penambahan contact
+app.get('/contact/add', function (req, res) {
+  res.render('add', {
+    title: 'Add Contact'
+  })
+});
+// untuk ke beranda penambahan contact (penutup)
 
 // untuk mengatahui detai pada nomor
 app.get('/contact/:nama', (req, res) => {
@@ -80,6 +84,7 @@ app.get('/contact/:nama', (req, res) => {
     test
   })
 })
+// untuk mengatahui detai pada nomor (penutup)
 
 // untuk mengapus contact
 app.get('/hapus/:nama', (req, res) => {
@@ -87,22 +92,15 @@ app.get('/hapus/:nama', (req, res) => {
   req.flash('msgDelete', 'Data Berhasil Dihapus')
   res.redirect('/')
 })
+// untuk mengapus contact (penutup)
 
+// untuk mengedit contact
 app.post('/edit/:nama',
-  // body('nama').custom(value => {
-  //   cekdup(value)
-  //   return true
-  // }),
   check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
   check('email', 'Email tidak valid').isEmail(),
   (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      // return res.status(400).json({ errors: errors.array() });
-      // res.render('edit', {
-      //   title: 'edit',
-      //   errors: errors.array()
-      // })
       let find = findContact(req.params.nama)
       res.render('edit', {
         title: 'Edit',
@@ -124,13 +122,8 @@ app.get('/edit/:nama', (req, res) => {
     find,
   })
 })
+// untuk mengedit contact (penutup)
 
-
-// app.post('/contact/edit/:nama', (req, res) => {
-//   updateEdit(req.body)
-//   req.flash('msg', 'Data Berhasil Ditambahkan')
-//   res.redirect('/')
-// })
 
 // midelware untuk ketika user memasukan link salah
 app.use('/', (req, res) => {
