@@ -1,12 +1,13 @@
 const express = require('express')
 const app = express()
 const { check, validationResult, isMobilePhone, isEmail, body } = require('express-validator');
-require('./utils/contact')
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session')
 const {secema} = require('./scema/scema')
 const port = 3000
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/data');
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded())
@@ -20,25 +21,20 @@ app.use(session({
 app.use(flash());
 
 
-
 // post saat menambahkan contact buat validasi nama, nomor hp dan email
 app.post('/',
-  body('nama').custom(value => {
-    cekdupNama(value)
-    return true
+  body('nama').custom(async value => {
+      let dataJson = await secema.findOne({nama: value})
+      if (dataJson){
+        throw new Error(`Nama ${value} sudah ada`)
+      }
+      return true
   }),
   
-  // body('email').custom(value => {
-  //   let cek = cekdupEmail(value)
-  //   let cuk = value.isEmail()
-  //   if(cek === value){
-  //     ce
-  //   }
-  //   return true
-  // }),
+
   check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
   check('email', 'Email tidak valid').isEmail(),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('add', {
@@ -46,12 +42,14 @@ app.post('/',
         errors: errors.array()
       })
     } else {
-      penambahData(req.body)
+      let data = new secema(req.body)
+      await data.save(req.body)
       req.flash('msg', 'Data Berhasil Ditambahkan')
       res.redirect('/')
     }
   }
 )
+
 // post buat validasi nama, nomor hp dan email (penutup)
 
 
@@ -88,8 +86,8 @@ app.get('/contact/:nama', async (req, res) => {
 // untuk mengatahui detai pada nomor (penutup)
 
 // untuk mengapus contact
-app.get('/hapus/:nama', (req, res) => {
-  hapusData(req.params.nama)
+app.get('/hapus/:nama', async (req, res) => {
+  await secema.deleteOne({nama: req.params.nama})
   req.flash('msgDelete', 'Data Berhasil Dihapus')
   res.redirect('/')
 })
@@ -97,27 +95,35 @@ app.get('/hapus/:nama', (req, res) => {
 
 // untuk mengedit contact
 app.post('/edit/:nama',
+// body('nama').custom(async value => {
+//   let dataJson = await secema.findOne({nama: value})
+//   if (dataJson){
+//     throw new Error(`Nama ${value} sudah ada`)
+//   }
+//   return true
+// }),
   check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
   check('email', 'Email tidak valid').isEmail(),
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      let find = findContact(req.params.nama)
+      let find = await secema.findOne({nama: req.params.nama})
       res.render('edit', {
         title: 'Edit',
         find,
         errors: errors.array()
       })
     } else {
-      updateEdit(req.body)
+      // console.log(req.body)
+      await secema.updateMany(req.body)
       req.flash('msg', 'Data sudah di edit')
       res.redirect('/')
     }
   }
 )
 
-app.get('/edit/:nama', (req, res) => {
-  let find = findContact(req.params.nama)
+app.get('/edit/:nama',async (req, res) => {
+  let find = await secema.findOne({nama: req.params.nama})
   res.render('edit', {
     title: 'Edit',
     find,

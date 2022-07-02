@@ -81,7 +81,6 @@ const updateEdit = (nama) => {
   const dataFilter = dataJson.find(e => e.nama === nama.oldName)
   if (dataFilter) {
     const index = dataJson.indexOf(dataFilter)
-    console.log(index)
     dataJson.splice(index, 1, nama)
     fs.writeFileSync('./data/data.json', JSON.stringify(dataJson))
     console.log(`data ${nama} berhasil diedit`)
