@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 // const secema = { nama: String, nomorhp: String, email: String}
 const secema = mongoose.model('datacontact', {
+  oldNama: String,
   nama: {
     type: String,
     require: true

@@ -42,7 +42,14 @@ app.post('/',
         errors: errors.array()
       })
     } else {
-      let data = new secema(req.body)
+      let data = new secema(
+        {
+          oldNama: req.body.nama,
+          nama: req.body.nama,
+          nomorhp: req.body.nomorhp,
+          email: req.body.email,
+        }
+        )
       await data.save(req.body)
       req.flash('msg', 'Data Berhasil Ditambahkan')
       res.redirect('/')
@@ -68,7 +75,7 @@ app.get('/', async (req, res) => {
 // untuk ke beranda penambahan contact
 app.get('/contact/add', function (req, res) {
   res.render('add', {
-    title: 'Add Contact'
+    title: 'Add Contact',
   })
 });
 // untuk ke beranda penambahan contact (penutup)
@@ -95,9 +102,12 @@ app.get('/hapus/:nama', async (req, res) => {
 
 // untuk mengedit contact
 app.post('/edit/:nama',
-body('nama').custom(async value => {
+body('nama').custom(async (value, {req}) => {
   let dataJson = await secema.findOne({nama: value})
-  if (dataJson){
+  console.log(value)
+  console.log(dataJson.nama)
+  console.log(req.body.oldNama)
+  if (value !== dataJson && req.body.oldNama){
     throw new Error(`Nama ${value} sudah ada`)
   }
   return true
