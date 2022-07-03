@@ -95,13 +95,13 @@ app.get('/hapus/:nama', async (req, res) => {
 
 // untuk mengedit contact
 app.post('/edit/:nama',
-// body('nama').custom(async value => {
-//   let dataJson = await secema.findOne({nama: value})
-//   if (dataJson){
-//     throw new Error(`Nama ${value} sudah ada`)
-//   }
-//   return true
-// }),
+body('nama').custom(async value => {
+  let dataJson = await secema.findOne({nama: value})
+  if (dataJson){
+    throw new Error(`Nama ${value} sudah ada`)
+  }
+  return true
+}),
   check('nomorhp', 'Nomor Hp tidak valid').isMobilePhone('id-ID'),
   check('email', 'Email tidak valid').isEmail(),
   async (req, res) => {
@@ -114,8 +114,17 @@ app.post('/edit/:nama',
         errors: errors.array()
       })
     } else {
-      // console.log(req.body)
-      await secema.updateMany(req.body)
+      let find = await secema.findOne({nama: req.params.nama})
+      await secema.updateOne(
+        {_id: find._id},
+        {
+          $set: {
+            nama: req.body.nama,
+            nomorhp: req.body.nomorhp,
+            email: req.body.email,
+          },
+        }
+        )
       req.flash('msg', 'Data sudah di edit')
       res.redirect('/')
     }
