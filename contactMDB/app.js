@@ -1,3 +1,4 @@
+require('./utils/monggos')
 const express = require('express')
 const app = express()
 const { check, validationResult, isMobilePhone, isEmail, body } = require('express-validator');
@@ -5,9 +6,9 @@ const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session')
 const {secema} = require('./scema/scema')
-const port = 3000
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/data');
+const port = 3000
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded())
@@ -26,7 +27,7 @@ app.post('/',
   body('nama').custom(async value => {
       let dataJson = await secema.findOne({nama: value})
       if (dataJson){
-        throw new Error(`Nama ${value} sudah ada`)
+        throw new Error(`Nama ${dataJson.nama} sudah ada`)
       }
       return true
   }),
@@ -44,7 +45,7 @@ app.post('/',
     } else {
       let data = new secema(
         {
-          oldNama: req.body.nama,
+          // oldNama: req.body.naam,
           nama: req.body.nama,
           nomorhp: req.body.nomorhp,
           email: req.body.email,
@@ -103,11 +104,13 @@ app.get('/hapus/:nama', async (req, res) => {
 // untuk mengedit contact
 app.post('/edit/:nama',
 body('nama').custom(async (value, {req}) => {
-  let dataJson = await secema.findOne({nama: value})
+  const dataJson = await secema.findOne({nama: value})
+  // const dup = await cekdupNama(value)
   console.log(value)
-  console.log(dataJson.nama)
+  console.log(dataJson)
   console.log(req.body.oldNama)
-  if (value !== dataJson && req.body.oldNama){
+  // if ((value === dataJson) && (value !== req.body.nama)){
+  if (value !== req.body.oldNama && dataJson){
     throw new Error(`Nama ${value} sudah ada`)
   }
   return true
@@ -129,6 +132,7 @@ body('nama').custom(async (value, {req}) => {
         {_id: find._id},
         {
           $set: {
+            oldNama: req.body.nama,
             nama: req.body.nama,
             nomorhp: req.body.nomorhp,
             email: req.body.email,
